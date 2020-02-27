@@ -189,24 +189,22 @@
 
 
 (defn update-post [req] 
-  (let [body (:body req)]
-
-    ; (pp/pprint  (params-request req :body))
-    ; (println "\n\n")
-    (pp/pprint req)
-    (let [content (get body "content")
-          title (get body "title")
-          id (Integer/parseInt (:id (:params req)))]
-          (if (and (nil? content) (nil? content)) 
-            (bad-request-response "content or title to update are missing")
-            {
-              :status  200
-              :headers {"Content-Type" "application/json"}
-              :body    (->>
-                          (let [post (sql/get-by-id mysql-db :posts id)]
-                            (let [c (if (nil? content) (:content post) content)
-                                  t (if (nil? title) (:title post) title)]
-                                (sql/update! mysql-db :posts {:content c :title t} ["id = ?" id]))))}))))
+  (let [body (:body req)
+        content (get body "content")
+        title (get body "title")
+        id (Integer/parseInt (:id (:params req)))
+        post (sql/get-by-id mysql-db :posts id)]
+          (if (not post) 
+            (not-found-response (str "post " id " wasn't found"))
+            (if (and (nil? content) (nil? title))
+              (bad-request-response "content or title to update are missing")
+              {
+                :status  200
+                :headers {"Content-Type" "application/json"}
+                :body    (->> (let [c (if (nil? content) (:content post) content)
+                                    t (if (nil? title) (:title post) title)
+                                    res (sql/update! mysql-db :posts {:content c :title t} ["id = ?" id])]
+                                  (json/write-str {:data {:id (:id post) :title t :content c} :message ""})))}))))
 
 (defn vote [req vote]
   (let [id (Integer/parseInt (:id (:params req)))]
@@ -248,11 +246,9 @@
 
 (defroutes app-routes
   (GET "/posts" [] list-all-posts)
-  (wrap-json-body (POST "/posts" [] create-new-post))
+  (POST "/posts" [] (wrap-json-body create-new-post))
   (GET "/posts/get/:id" [id] get-single-post)
-  (wrap-json-body (PUT "/posts/:id" [id] update-post))
-  ; (PUT "/posts/:id" [id] update-post)
-
+  (PUT "/posts/:id" [id] (wrap-json-body update-post))
   (DELETE "/posts/:id" [id] delete-post)
   (PUT "/posts/up/:id" [id] upvote)
   (PUT "/posts/down/:id" [id] downvote)
@@ -266,10 +262,6 @@
 
     (db-init)
     (cache-init)
-
-    ; Run the server with Ring.defaults middleware
-    ; (server/run-server (wrap-defaults #'app-routes site-defaults) {:port port})
-    ; Run the server without ring defaults
     (server/run-server #'app-routes {:port port})
     
     (println (str "Running webserver at http:/127.0.0.1:" port "/"))))
