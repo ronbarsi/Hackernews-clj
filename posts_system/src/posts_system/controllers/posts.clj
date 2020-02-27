@@ -1,10 +1,9 @@
 (ns posts_system.controllers.posts
   (:require
-   [posts_system.db :as db]
    [posts_system.redis :as cache]
    [posts_system.helpers :as helpers]
    [clojure.data.json :as json]
-   [clojure.java.jdbc :as sql])
+   [posts_system.models.posts.posts :as model])
   (:gen-class))
 
 
@@ -20,7 +19,7 @@
 (defn list-all-posts [req]
   {:status  200
    :headers {"Content-Type" "application/json"}
-   :body    (->> (json/write-str {:data (sql/query db/mysql-db ["SELECT * FROM db.posts "]) :message ""}))})
+   :body    (->> (json/write-str {:data (model/all-posts) :message ""}))})
 
 
 (defn create-new-post [req]
@@ -32,7 +31,7 @@
       {:status 201
        :headers {"Content-Type" "application/json"}
        :body (->>
-              (let [response  (sql/insert! db/mysql-db :posts {:title title :content content})
+              (let [response  (model/insert-post title content)
                     new_id (:generated_key (first response))]
                 (json/write-str {:data {:id new_id} :message (str "created successfully with id " new_id)})))})))
 
@@ -42,15 +41,15 @@
    :headers {"Content-Type" "application/json"}
    :body (->>
           (let [id (Integer/parseInt (:id (:params req)))
-                res (first (sql/delete! db/mysql-db :posts ["id = ?" id]))]
-              (if (> res 0)
-                (json/write-str {:data "" :message "deleted successfully"})
-                (json/write-str {:data "" :message "nothing to delete!"}))))})
+                res (first (model/delete-post id))]
+            (if (> res 0)
+              (json/write-str {:data "" :message "deleted successfully"})
+              (json/write-str {:data "" :message "nothing to delete!"}))))})
 
 
 (defn get-single-post [req]
   (let [id (Integer/parseInt (:id (:params req)))
-        res (sql/get-by-id db/mysql-db :posts id)]
+        res (model/get-post id)]
     (if (nil? res)
       (not-found-response (str "post " id " wasn't found"))
       {:status  200
@@ -63,7 +62,7 @@
         content (get body "content")
         title (get body "title")
         id (Integer/parseInt (:id (:params req)))
-        post (sql/get-by-id db/mysql-db :posts id)]
+        post (model/get-post id)]
     (if (not post)
       (not-found-response (str "post " id " wasn't found"))
       (if (and (nil? content) (nil? title))
@@ -73,17 +72,17 @@
          :body    (->> (let [c (if (nil? content) (:content post) content)
                              t (if (nil? title) (:title post) title)
                              creation_timestamp (:creation_timestamp post)]
-                         (sql/update! db/mysql-db :posts {:content c :title t :creation_timestamp creation_timestamp} ["id = ?" id])
+                         (model/update-post c t id creation_timestamp)
                          (json/write-str {:data {:id (:id post) :title t :content c} :message ""})))}))))
 
 (defn vote [req vote]
   (let [id (Integer/parseInt (:id (:params req)))
-        res (first (sql/execute! db/mysql-db [(str "UPDATE posts SET " vote "vote = " vote "vote + 1, creation_timestamp = creation_timestamp WHERE id = ?") id]))]
+        res (first (model/vote-post vote id))]
     (if (= res 0)
       (not-found-response (str "post " id " wasn't found"))
       {:status  200
        :headers {"Content-Type" "application/json"}
-       :body    (->> (json/write-str {:data (sql/get-by-id db/mysql-db :posts id) :message ""}))})))
+       :body    (->> (json/write-str {:data (model/get-post id) :message ""}))})))
 
 (defn upvote [req] (vote req "up"))
 (defn downvote [req] (vote req "down"))
@@ -95,7 +94,7 @@
     (if (< (- execution-timestamp last_execution) 60)
       (cache/get_top_posts)
       (let
-       [result (sql/query db/mysql-db [db/top-posts-query])
+       [result (model/top-posts)
         execution-timestamp-str (helpers/timestamp->string execution-timestamp)
         response {:status  200
                   :headers {"Content-Type" "application/json"}

@@ -1,17 +1,27 @@
 (ns posts_system.models.posts.posts
   (:require
-   [posts_system.core :as db]
-   [org.httpkit.server :as server]
-   [compojure.core :refer :all]
-   [compojure.route :as route]
-   [ring.middleware.defaults :refer :all]    [clojure.pprint :as pp]
-   [clojure.string :as str]
-   [clojure.data.json :as json]
-   [clojure.java.jdbc :as sql]
-   [ring.middleware.json :refer [wrap-json-response]]
-   [ring.util.response :refer [response]]
-   [clj-time.coerce :as c]
-   [taoensso.carmine :as car :refer (wcar)])
+   [posts_system.db :as db]
+   [clojure.java.jdbc :as sql])
   (:gen-class))
 
 
+(defn all-posts []
+  (sql/query db/mysql-db ["SELECT * FROM db.posts "]))
+
+(defn get-post [id]
+  (sql/get-by-id db/mysql-db :posts id))
+
+(defn insert-post [title content]
+  (sql/insert! db/mysql-db :posts {:title title :content content}))
+
+(defn delete-post [id]
+  (sql/delete! db/mysql-db :posts ["id = ?" id]))
+
+(defn update-post [content title id creation_timestamp]
+  (sql/update! db/mysql-db :posts {:content content :title title :creation_timestamp creation_timestamp} ["id = ?" id]))
+
+(defn vote-post [vote id]
+  (sql/execute! db/mysql-db [(str "UPDATE posts SET " vote "vote = " vote "vote + 1, creation_timestamp = creation_timestamp WHERE id = ?") id]))
+
+(defn top-posts []
+  (sql/query db/mysql-db [db/top-posts-query]))
