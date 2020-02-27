@@ -6,19 +6,20 @@
    [org.httpkit.server :as server]
    [compojure.core :as rest]
    [compojure.route :as route]
-   [ring.middleware.json :refer [wrap-json-body] :as wrap-json-body])
+   [ring.middleware.json :refer [wrap-json-body]])
   (:gen-class))
 
 
 (rest/defroutes app-routs
+  (rest/GET "/posts/top" [] post-controller/top-posts)
   (rest/GET "/posts" [] post-controller/list-all-posts)
   (rest/POST "/posts" [] (wrap-json-body post-controller/create-new-post))
-  (rest/GET "/posts/get/:id" [] post-controller/get-single-post)
+  (rest/GET "/posts/:id" [] post-controller/get-single-post)
   (rest/PUT "/posts/:id" [] (wrap-json-body post-controller/update-post))
   (rest/DELETE "/posts/:id" [] post-controller/delete-post)
   (rest/PUT "/posts/up/:id" [] post-controller/upvote)
   (rest/PUT "/posts/down/:id" [] post-controller/downvote)
-  (rest/GET "/posts/top" [] post-controller/top-posts)
+
   (route/not-found "Error, page not found!"))
 
 
