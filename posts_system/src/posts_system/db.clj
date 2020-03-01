@@ -39,19 +39,22 @@
        " LIMIT " num-of-top-posts
        " ) as res"))
 
-(defn db-init []
-  (println "waiting for db")
-  (Thread/sleep 2000)
+(defn db-init
+  ([] (db-init 0))
+  ([c]
+   (if (= c 50) (throw (Exception. (str "Cant connect to DB. Max retries " c)))
+       (do
+         (println "Waiting for db " c)
+         (try (sql/query mysql-db ["SELECT 'ping'"])
+              (catch Exception e (Thread/sleep 5000) (db-init (+ 1 c))))
+         
+         (extend-type java.sql.Timestamp
+           json/JSONWriter
+           (-write [date out]
+             (json/-write (str date) out)))
 
-  (extend-type java.sql.Timestamp
-    json/JSONWriter
-    (-write [date out]
-      (json/-write (str date) out)))
+         (try (sql/db-do-commands mysql-db [posts_table-ddl])
+              (catch java.sql.BatchUpdateException se (println "Table already exists")))
 
-  (try ((println (sql/db-do-commands mysql-db
-                                     [posts_table-ddl])))
-       (catch java.sql.BatchUpdateException se (println "Table already exists")))
-
-  (try ((println (sql/db-do-commands mysql-db
-                                     [funct-ddl])))
-       (catch java.sql.BatchUpdateException se (println "Function already exists"))))
+         (try (sql/db-do-commands mysql-db [funct-ddl])
+              (catch java.sql.BatchUpdateException se (println "Function already exists")))))))
