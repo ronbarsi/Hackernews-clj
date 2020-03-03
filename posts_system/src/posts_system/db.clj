@@ -4,7 +4,7 @@
    [clojure.java.jdbc :as sql])
   (:gen-class))
 
-(def mysql-db {:classname "com.mysql.jdbc.Driver"
+(def ^:dynamic mysql-db {:classname "com.mysql.jdbc.Driver"
                :dbtype "mysql"
                :dbname "db"
                :user "root"

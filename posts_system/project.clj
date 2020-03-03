@@ -12,7 +12,9 @@
                  [mysql/mysql-connector-java "5.1.38"]
                  [ring/ring-json "0.5.0"]
                  [clj-time "0.15.2"]
-                 [com.taoensso/carmine "2.19.1"]]
+                 [com.taoensso/carmine "2.19.1"]
+                 [ring/ring-mock "0.4.0"]
+                 [cheshire "5.10.0"]]
 
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
