@@ -14,6 +14,7 @@
                  [clj-time "0.15.2"]
                  [com.taoensso/carmine "2.19.1"]
                  [ring/ring-mock "0.4.0"]
+                 [org.clojure/tools.namespace "1.0.0"]
                  [cheshire "5.10.0"]]
 
   :target-path "target/%s"

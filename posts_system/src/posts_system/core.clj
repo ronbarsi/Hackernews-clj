@@ -10,17 +10,17 @@
   (:gen-class))
 
 
-(rest/defroutes app-routs
-  (rest/GET "/posts/top" [] post-controller/top-posts)
-  (rest/GET "/posts" [] post-controller/list-all-posts)
-  (rest/POST "/posts" [] (wrap-json-body post-controller/create-new-post))
-  (rest/GET "/posts/:id" [] post-controller/get-single-post)
-  (rest/PUT "/posts/:id" [] (wrap-json-body post-controller/update-post))
-  (rest/DELETE "/posts/:id" [] post-controller/delete-post)
-  (rest/PUT "/posts/up/:id" [] post-controller/upvote)
-  (rest/PUT "/posts/down/:id" [] post-controller/downvote)
+(rest/defroutes app-routes
+                (rest/GET "/posts/top" [] post-controller/top-posts)
+                (rest/GET "/posts" [] post-controller/list-all-posts)
+                (rest/POST "/posts" [] (wrap-json-body post-controller/create-new-post))
+                (rest/GET "/posts/:id" [] post-controller/get-single-post)
+                (rest/PUT "/posts/:id" [] (wrap-json-body post-controller/update-post))
+                (rest/DELETE "/posts/:id" [] post-controller/delete-post)
+                (rest/PUT "/posts/up/:id" [] post-controller/upvote)
+                (rest/PUT "/posts/down/:id" [] post-controller/downvote)
 
-  (route/not-found "Error, page not found!"))
+                (route/not-found "Error, page not found!"))
 
 
 (defn -main
@@ -29,6 +29,6 @@
 
     (db/db-init)
     (cache/cache-init)
-    (server/run-server #'app-routs {:port port})
+    (server/run-server #'app-routes {:port port})
 
     (println (str "Running webserver at http:/127.0.0.1:" port "/"))))
