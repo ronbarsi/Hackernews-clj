@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - image: bitnami/redis:latest
+          name: redis
+          env:
+            - name: ALLOW_EMPTY_PASSWORD
+              value: yes
+          ports:
+            - containerPort: 4406
+              name: redis

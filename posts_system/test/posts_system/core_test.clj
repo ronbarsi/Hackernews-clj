@@ -1,7 +1,7 @@
 (ns posts_system.core-test
   (:require [clojure.test :refer :all]
             [ring.mock.request :as mock]
-            [posts_system.db :as db]
+            [mysql.db :as db]
             [posts_system.models.posts.posts :refer [get-post]]
             [posts_system.core :refer [app-routes]]
             [posts_system.controllers.posts :as post-controller]

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mydb
+spec:
+  selector:
+    matchLabels:
+      app: mydb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mydb
+    spec:
+      containers:
+        - image: mysql:5.7
+          name: mydb
+          env:
+            - name: MYSQL_DATABASE
+              value: db
+            - name: MYSQL_ROOT_PASSWORD
+              value: pp
+          ports:
+            - containerPort: 3306
+              name: mydb

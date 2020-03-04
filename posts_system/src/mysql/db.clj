@@ -1,4 +1,4 @@
-(ns posts_system.db
+(ns mysql.db
   (:require
    [clojure.data.json :as json]
    [clojure.java.jdbc :as sql])

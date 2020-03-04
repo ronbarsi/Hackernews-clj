@@ -1,4 +1,4 @@
-(ns posts_system.redis
+(ns redis.redis
   (:require
    [taoensso.carmine :as car :refer (wcar)])
   (:gen-class))

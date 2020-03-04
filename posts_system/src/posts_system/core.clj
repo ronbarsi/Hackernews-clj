@@ -1,7 +1,7 @@
 (ns posts_system.core
   (:require
-   [posts_system.db :as db]
-   [posts_system.redis :as cache] 
+   [mysql.db :as db]
+   [redis.redis :as cache]
    [posts_system.controllers.posts :as post-controller]
    [org.httpkit.server :as server]
    [compojure.core :as rest]

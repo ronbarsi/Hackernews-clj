@@ -1,6 +1,6 @@
 (ns posts_system.controllers.posts
   (:require
-   [posts_system.redis :as cache]
+   [redis.redis :as cache]
    [posts_system.helpers :as helpers]
    [clojure.data.json :as json]
    [posts_system.models.posts.posts :as model])

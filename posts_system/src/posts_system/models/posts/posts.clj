@@ -1,6 +1,6 @@
 (ns posts_system.models.posts.posts
   (:require
-   [posts_system.db :as db]
+   [mysql.db :as db]
    [clojure.java.jdbc :as sql])
   (:gen-class))
 
