@@ -20,5 +20,5 @@ spec:
             - name: ALLOW_EMPTY_PASSWORD
               value: "true"
           ports:
-            - containerPort: 4406
+            - containerPort: 6379
               name: redis
