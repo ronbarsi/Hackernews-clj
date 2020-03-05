@@ -40,24 +40,21 @@
        " LIMIT " num-of-top-posts
        " ) as res"))
 
+(extend-type java.sql.Timestamp
+  json/JSONWriter
+  (-write [date out]
+    (json/-write (str date) out)))
+
 (defn db-init
-  ([] (db-init 0))
+  ([] (println "\nInitialize DB") (db-init 1))
   ([c]
    (if (= c 50) (throw (Exception. (str "Cant connect to DB. Max retries " c)))
-                (do
-                  (println "Waiting for db " c)
-                  (try (sql/query mysql-db ["SELECT 'ping'"])
-                       (catch Exception e (Thread/sleep 5000) (db-init (+ 1 c))))
-
-                  (extend-type java.sql.Timestamp
-                    json/JSONWriter
-                    (-write [date out]
-                      (json/-write (str date) out)))
-
-                  (println "Creating posts table")
-                  (try (sql/db-do-commands mysql-db [posts_table-ddl])
-                       (catch java.sql.BatchUpdateException se (println "\tTable already exists")))
-
-                  (println "Creating top-posts function")
-                  (try (sql/db-do-commands mysql-db [funct-ddl])
-                       (catch java.sql.BatchUpdateException se (println "\tFunction already exists\n")))))))
+                (do (try (sql/query mysql-db ["SELECT 'ping'"])
+                         (println "Creating posts table")
+                         (try (sql/db-do-commands mysql-db [posts_table-ddl])
+                              (catch java.sql.BatchUpdateException se (println "\t-Table already exists")))
+                         (println "Creating top-posts function")
+                         (try (sql/db-do-commands mysql-db [funct-ddl])
+                              (catch java.sql.BatchUpdateException se (println "\t-Function already exists")))
+                         (println "DB Initialized successfully\n")
+                         (catch Exception e (do (Thread/sleep 5000) (println "Waiting for DB......... retries: " c) (db-init (+ 1 c)))))))))
