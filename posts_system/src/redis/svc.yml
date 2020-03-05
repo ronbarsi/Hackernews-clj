@@ -7,5 +7,4 @@ spec:
     - port: 4406
   selector:
     app: redis
-  type: clusterIP
-  clusterIP: None
+  type: ClusterIP

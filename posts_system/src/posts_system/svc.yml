@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: posts_system
+  name: posts-system
 spec:
   ports:
     - protocol: TCP
       port: 5000
       targetPort: 3000
   selector:
-    app: posts_system
-  type: NodePort
+    app: posts-system
+  type: LoadBalancer
 

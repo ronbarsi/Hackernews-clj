@@ -7,5 +7,4 @@ spec:
     - port: 3306
   selector:
     app: mydb
-  type: clusterIP
-  clusterIP: None
+  type: ClusterIP
