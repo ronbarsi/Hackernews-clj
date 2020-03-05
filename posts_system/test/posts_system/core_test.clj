@@ -14,7 +14,8 @@
                     :user      "root"
                     :password  "pp"
                     :host      "localhost"
-                    :port      "3308"})
+                    :port      "3308"
+                    :useSSL    false})
 
 
 (deftest create-post-test

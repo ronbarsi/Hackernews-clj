@@ -28,5 +28,7 @@
   (get_cache "last_execution"))
 
 (defn cache-init []
+  (println "Initialize cache:")
   (update_top_posts "")
-  (update_last_execution (str (- (quot (System/currentTimeMillis) 1000) 120))))
+  (update_last_execution (str (- (quot (System/currentTimeMillis) 1000) 120)))
+  (println "Cache Initialized successfully\n"))

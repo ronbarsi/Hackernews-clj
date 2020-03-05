@@ -14,6 +14,7 @@
 ;;                      :body (json/write-str body)))))
 
 (defn response [status body]
+  (println "Server response: " (:message body))
   {:status status
    :headers {"Content-Type" "application/json"}
    :body (->> (json/write-str body))})
@@ -25,7 +26,7 @@
 
 
 (defn list-all-posts [req]
-  (response 200 {:data (model/all-posts) :message ""}))
+  (response 200 {:data (model/all-posts) :message "all posts"}))
 
 
 (defn create-new-post [req]
@@ -72,7 +73,7 @@
         res (model/get-post id)]
     (if (nil? res)
       (not-found-response (str "post " id " wasn't found"))
-      (response 200 {:data res :message ""}))))
+      (response 200 {:data res :message (str "post: " id)}))))
 
 
 (defn update-post [req]
@@ -89,14 +90,14 @@
               t (if (nil? title) (:title post) title)
               creation_timestamp (:creation_timestamp post)]
           (model/update-post c t id creation_timestamp)
-          (response 200 {:data {:id (:id post) :title t :content c} :message ""}))))))
+          (response 200 {:data {:id (:id post) :title t :content c} :message (str "post " id " updated") }))))))
 
 (defn vote [req vote]
   (let [id (Integer/parseInt (:id (:params req)))
         res (first (model/vote-post vote id))]
     (if (= res 0)
       (not-found-response (str "post " id " wasn't found"))
-      (response 200 {:data (model/get-post id) :message ""}))))
+      (response 200 {:data (model/get-post id) :message (str "post " id " " vote "ed successfully")}))))
 
 (defn upvote [req] (vote req "up"))
 (defn downvote [req] (vote req "down"))
@@ -110,7 +111,7 @@
       (let
        [result (model/top-posts)
         execution-timestamp-str (helpers/timestamp->string execution-timestamp)
-        response (response 200 {:last_execution execution-timestamp-str :data result :message ""})]
+        response (response 200 {:last_execution execution-timestamp-str :data result :message "top posts"})]
         (cache/update_last_execution execution-timestamp)
         (cache/update_top_posts response)
         response))))

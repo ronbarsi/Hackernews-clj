@@ -1,16 +1,17 @@
 (ns mysql.db
   (:require
-   [clojure.data.json :as json]
-   [clojure.java.jdbc :as sql])
+    [clojure.data.json :as json]
+    [clojure.java.jdbc :as sql])
   (:gen-class))
 
 (def ^:dynamic mysql-db {:classname "com.mysql.jdbc.Driver"
-               :dbtype "mysql"
-               :dbname "db"
-               :user "root"
-               :password "pp"
-               :host "mydb"
-               :port "3306"})
+                         :dbtype    "mysql"
+                         :dbname    "db"
+                         :user      "root"
+                         :password  "pp"
+                         :host      "mydb"
+                         :port      "3306"
+                         :useSSL    false})
 
 (def posts_table-ddl (sql/create-table-ddl :posts
                                            [[:id :integer "PRIMARY KEY" "AUTO_INCREMENT"]
@@ -43,18 +44,20 @@
   ([] (db-init 0))
   ([c]
    (if (= c 50) (throw (Exception. (str "Cant connect to DB. Max retries " c)))
-       (do
-         (println "Waiting for db " c)
-         (try (sql/query mysql-db ["SELECT 'ping'"])
-              (catch Exception e (Thread/sleep 5000) (db-init (+ 1 c))))
-         
-         (extend-type java.sql.Timestamp
-           json/JSONWriter
-           (-write [date out]
-             (json/-write (str date) out)))
+                (do
+                  (println "Waiting for db " c)
+                  (try (sql/query mysql-db ["SELECT 'ping'"])
+                       (catch Exception e (Thread/sleep 5000) (db-init (+ 1 c))))
 
-         (try (sql/db-do-commands mysql-db [posts_table-ddl])
-              (catch java.sql.BatchUpdateException se (println "Table already exists")))
+                  (extend-type java.sql.Timestamp
+                    json/JSONWriter
+                    (-write [date out]
+                      (json/-write (str date) out)))
 
-         (try (sql/db-do-commands mysql-db [funct-ddl])
-              (catch java.sql.BatchUpdateException se (println "Function already exists")))))))
+                  (println "Creating posts table")
+                  (try (sql/db-do-commands mysql-db [posts_table-ddl])
+                       (catch java.sql.BatchUpdateException se (println "\tTable already exists")))
+
+                  (println "Creating top-posts function")
+                  (try (sql/db-do-commands mysql-db [funct-ddl])
+                       (catch java.sql.BatchUpdateException se (println "\tFunction already exists\n")))))))

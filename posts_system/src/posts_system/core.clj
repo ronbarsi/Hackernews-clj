@@ -19,7 +19,6 @@
                 (rest/DELETE "/posts/:id" [] post-controller/delete-post)
                 (rest/PUT "/posts/up/:id" [] post-controller/upvote)
                 (rest/PUT "/posts/down/:id" [] post-controller/downvote)
-
                 (route/not-found "Error, page not found!"))
 
 
