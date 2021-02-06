@@ -2,9 +2,8 @@
   (:require [clojure.test :refer :all]
             [ring.mock.request :as mock]
             [mysql.db :as db]
-            [posts_system.models.posts.posts :refer [get-post]]
+            [posts_system.models.posts :refer [show]]
             [posts_system.core :refer [app-routes]]
-            [posts_system.controllers.posts :as post-controller]
             [cheshire.core :refer :all]
             [clojure.data.json :as json]))
 
@@ -29,7 +28,7 @@
             data (get body "data")
             message (get body "message")
             id (get data "id")
-            post (get-post id)]
+            post (show id)]
         (is (= (:status response) 201))
         (is (= message (str "created successfully with id " id)))
 

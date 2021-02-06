@@ -1,7 +1,5 @@
 (ns redis.redis
-  (:require
-    [taoensso.carmine :as car :refer (wcar)])
-  (:gen-class))
+  (:require [taoensso.carmine :as car :refer (wcar)]))
 
 
 (def redis_url (System/getenv "REDIS_URL"))
@@ -15,13 +13,13 @@
 (defn get_cache [key]
   (wcar* (car/get key)))
 
-(defn update_top_posts [value]
+(defn update-top-posts [value]
   (update_cache "top_posts" value))
 
-(defn update_last_execution [value]
+(defn update-last-execution [value]
   (update_cache "last_execution" value))
 
-(defn get_top_posts []
+(defn get-top-posts []
   (get_cache "top_posts"))
 
 (defn get_last_execution []
@@ -32,7 +30,7 @@
   ([c]
    (if (= c 50) (throw (Exception. (str "Cant connect to Redis. Max retries " c)))
                 (do (try (wcar* (car/ping))
-                         (update_top_posts "")
-                         (update_last_execution (str (- (quot (System/currentTimeMillis) 1000) 120)))
+                         (update-top-posts "")
+                         (update-last-execution (str (- (quot (System/currentTimeMillis) 1000) 120)))
                          (println "Cache Initialized successfully\n")
                          (catch Exception e (Thread/sleep 10000) (println "Waiting for Redis......... retries: " c) (cache-init (+ 1 c))))))))

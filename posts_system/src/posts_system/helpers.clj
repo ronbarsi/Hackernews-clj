@@ -1,8 +1,6 @@
 (ns posts_system.helpers
-  (:require
-   [clj-time.coerce :as c]
-   [clojure.string :as str])
-  (:gen-class))
+  (:require [clj-time.coerce :as c]
+            [clojure.string :as str]))
 
 
 (defn timestamp->string [tmstmp]
