@@ -70,5 +70,5 @@
        (catch Exception e
          (do
            (println "Waiting for DB......... retries: " c)
-           (Thread/sleep (System/getenv "DB_RETRIES_PERIOD"))
+           (Thread/sleep (Integer/parseInt (System/getenv "DB_RETRIES_PERIOD")))
            (db-init (inc c))))))))

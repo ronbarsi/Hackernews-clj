@@ -23,7 +23,7 @@
 
 (defn update* [{{:keys [content title id]} :params}]
   (let [p (posts/show id)]
-    (if p
+    (if (not p)
       (response/not-found)
       (if (and (nil? content) (nil? title))
         (response/invalid-request {:message "content or title are missing"})
