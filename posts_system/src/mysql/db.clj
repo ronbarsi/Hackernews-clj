@@ -51,7 +51,7 @@
   (try (sql/db-do-commands mysql-db [posts_table-ddl])
        (catch java.sql.BatchUpdateException se (println "\t-Table already exists"))))
 
-(defn create-yop-posts-function []
+(defn create-top-posts-function []
   (println "Creating top-posts function")
   (try (sql/db-do-commands mysql-db [funct-ddl])
        (catch java.sql.BatchUpdateException se (println "\t-Function already exists"))))
@@ -64,7 +64,7 @@
      (try
        (sql/query mysql-db ["SELECT 1"])
        (create-posts-table)
-       (create-yop-posts-function)
+       (create-top-posts-function)
        (println "DB Initialized successfully\n")
 
        (catch Exception e

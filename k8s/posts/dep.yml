@@ -13,11 +13,19 @@ spec:
         app: posts-system
     spec:
       containers:
-        - image: ronbar/hackernews:v1.3
+        - image: ronbar/hackernews:v1.4
           name: posts-system
           env:
             - name: REDIS_URL
               value: "redis://redis:6379"
+            - name: DB_RETRIES_PERIOD
+              value: "1000"
+            - name: DB_RETRIES_MAX_ATTEMPTS
+              value: "50"
+            - name: TOP_POSTS_PAGE_SIZE
+              value: "30"
+            - name: SERVICE_PORT
+              value: "5000"
           ports:
-            - containerPort: 3000
+            - containerPort: 500
               name: posts-system

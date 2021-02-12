@@ -15,11 +15,8 @@
   (let [posts (posts/list*)]
     (response/ok {:posts posts})))
 
-(defn show [id]
-  (let [p (posts/show id)]
-    (if p
-      (response/ok {:post p})
-      (response/not-found))))
+(defn show [{:keys [post]}]
+  (response/ok {:post post}))
 
 (defn update* [{{:keys [content title id]} :params}]
   (let [p (posts/show id)]
@@ -40,10 +37,10 @@
       (response/not-found)
       (response/ok {:post (posts/show id)}))))
 
-(defn upvote [id]
+(defn upvote [{{:keys [id]} :params}]
   (vote id "up"))
 
-(defn downvote [id]
+(defn downvote [{{:keys [id]} :params}]
   (vote id "down"))
 
 (defn top []
@@ -58,7 +55,7 @@
         (cache/update-top-posts response)
         response))))
 
-(defn delete [id]
+(defn delete [{{:keys [id]} :params}]
   (let [res (first (posts/delete id))]
     (if (> res 0)
       (response/ok {:message "deleted successfully"})
