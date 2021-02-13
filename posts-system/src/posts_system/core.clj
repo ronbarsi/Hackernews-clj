@@ -16,9 +16,11 @@
 
 
 "
+currently the DB is configured in test context, but migration doesn't run so the table aren't there
+
 TODO:
 3. move to honeysql db handler + psql
-4. write makefile (make test + make run)
+4. write makefile (make dev + make run)
 5. write mocks + tests
 6. DB migrations
 7. add logs
