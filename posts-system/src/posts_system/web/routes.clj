@@ -1,5 +1,5 @@
 (ns posts-system.web.routes
-  (:require [posts_system.web.controllers.posts :as posts]
+  (:require [posts-system.web.controllers.posts :as posts]
             [posts-system.web.middleware.post :refer [wrap-post]]
             [compojure.core :refer [GET PUT POST DELETE defroutes context wrap-routes]]
             [compojure.route :refer [not-found]]

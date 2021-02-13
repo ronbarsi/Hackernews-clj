@@ -4,11 +4,11 @@
 
 (def ^:dynamic mysql-db {:classname "com.mysql.jdbc.Driver"
                          :dbtype    "mysql"
-                         :dbname    "db"
-                         :user      "root"
-                         :password  "pp"
-                         :host      "mydb"
-                         :port      "3306"
+                         :dbname    (System/getenv "DB_NAME")
+                         :user      (System/getenv "DB_USER")
+                         :password  (System/getenv "DB_PASSWORD")
+                         :host      (System/getenv "DB_HOST")
+                         :port      (System/getenv "DB_PORT")
                          :useSSL    false})
 
 (def posts-table :posts)
@@ -56,8 +56,8 @@
   (try (sql/db-do-commands mysql-db [funct-ddl])
        (catch java.sql.BatchUpdateException se (println "\t-Function already exists"))))
 
-(defn db-init
-  ([] (println "Initialize DB") (db-init 1))
+(defn init
+  ([] (println "Initialize DB") (init 1))
   ([c]
    (if (= c (System/getenv "DB_RETRIES_MAX_ATTEMPTS"))
      (throw (Exception. (str "Cant connect to DB. Max retries " c)))
@@ -71,4 +71,4 @@
          (do
            (println "Waiting for DB......... retries: " c)
            (Thread/sleep (Integer/parseInt (System/getenv "DB_RETRIES_PERIOD")))
-           (db-init (inc c))))))))
+           (init (inc c))))))))

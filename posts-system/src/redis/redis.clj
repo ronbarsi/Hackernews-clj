@@ -25,12 +25,12 @@
 (defn get_last_execution []
   (get_cache "last_execution"))
 
-(defn cache-init
-  ([] (println "Initialize cache") (cache-init 1))
+(defn init
+  ([] (println "Initialize cache") (init 1))
   ([c]
    (if (= c 50) (throw (Exception. (str "Cant connect to Redis. Max retries " c)))
                 (do (try (wcar* (car/ping))
                          (update-top-posts "")
                          (update-last-execution (str (- (quot (System/currentTimeMillis) 1000) 120)))
                          (println "Cache Initialized successfully\n")
-                         (catch Exception e (Thread/sleep 10000) (println "Waiting for Redis......... retries: " c) (cache-init (+ 1 c))))))))
+                         (catch Exception e (Thread/sleep 10000) (println "Waiting for Redis......... retries: " c) (init (+ 1 c))))))))

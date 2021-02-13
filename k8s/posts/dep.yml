@@ -16,6 +16,16 @@ spec:
         - image: ronbar/hackernews:v1.4
           name: posts-system
           env:
+            - name: DB_HOST
+              value: "mydb"
+            - name: DB_PASSOWRD
+              value: "pp"
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USER
+              value: "root"
+            - name: DB_NAME
+              value: "db"
             - name: REDIS_URL
               value: "redis://redis:6379"
             - name: DB_RETRIES_PERIOD

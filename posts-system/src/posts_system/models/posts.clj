@@ -1,4 +1,4 @@
-(ns posts_system.models.posts
+(ns posts-system.models.posts
   (:require [mysql.db :as db]
             [clojure.java.jdbc :as sql]))
 

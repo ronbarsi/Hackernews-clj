@@ -1,4 +1,4 @@
-(ns posts_system.helpers
+(ns posts-system.helpers
   (:require [clj-time.coerce :as c]
             [clojure.string :as str]))
 
