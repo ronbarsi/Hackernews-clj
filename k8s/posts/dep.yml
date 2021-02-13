@@ -13,12 +13,12 @@ spec:
         app: posts-system
     spec:
       containers:
-        - image: ronbar/hackernews:v1.4
+        - image: ronbar/hackernews:v1.6
           name: posts-system
           env:
             - name: DB_HOST
               value: "mydb"
-            - name: DB_PASSOWRD
+            - name: DB_PASSWORD
               value: "pp"
             - name: DB_PORT
               value: "3306"
@@ -37,5 +37,5 @@ spec:
             - name: SERVICE_PORT
               value: "5000"
           ports:
-            - containerPort: 500
+            - containerPort: 5000
               name: posts-system
