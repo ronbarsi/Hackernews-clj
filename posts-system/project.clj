@@ -15,7 +15,15 @@
                  [ring/ring-mock "0.4.0"]
                  [org.clojure/tools.namespace "1.0.0"]
                  [cheshire "5.10.0"]
-                 [com.novemberain/validateur "2.5.0"]]
+                 [com.novemberain/validateur "2.5.0"]
+                 [migratus "1.2.8"]
+                 [seancorfield/next.jdbc "1.1.582"]
+                 [clojure.jdbc/clojure.jdbc-c3p0 "0.3.3"]
+                 [org.postgresql/postgresql "42.1.3"]
+                 [honeysql "1.0.444"]
+                 [nilenso/honeysql-postgres "0.2.6"]]
+
+  :aliases {"migrations:migrate" ["run" "-m" "db.migration/migrate"]}
 
   :main ^:skip-aot posts-system.core
   :target-path "target/%s"
