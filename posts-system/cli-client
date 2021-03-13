@@ -1,0 +1,44 @@
+BASE_URL=http://localhost:5000
+
+posts-create () {
+	BODY=$1
+	curl --request POST -d $BODY --header "Content-Type: application/json" --url $BASE_URL/posts
+}
+
+posts-show () {
+  ID=$1
+  curl $BASE_URL/posts/$ID
+}
+
+posts-top () {
+  curl $BASE_URL/posts/top
+}
+
+posts-ping () {
+  curl $BASE_URL/ping
+}
+
+posts-list () {
+  curl $BASE_URL/posts
+}
+
+posts-up () {
+  ID=$1
+  curl --request PUT $BASE_URL/posts/$ID/up
+}
+
+posts-down () {
+  ID=$1
+  curl --request PUT $BASE_URL/posts/$ID/down
+}
+
+posts-update () {
+  ID=$1
+  BODY=$2
+  curl --request PUT -d $BODY --header "Content-Type: application/json" --url $BASE_URL/posts/$ID
+}
+
+posts-delete () {
+  ID=$1
+  curl --request DELETE $BASE_URL/posts/$ID
+}

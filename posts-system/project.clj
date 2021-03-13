@@ -1,5 +1,4 @@
-(defproject posts_system "0.1.0-SNAPSHOT"
-  :main ^:skip-aot posts_system.core
+(defproject posts-system "0.1.0-SNAPSHOT"
   :url "http://example.com/FIXME"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
             :url "https://www.eclipse.org/legal/epl-2.0/"}
@@ -15,7 +14,12 @@
                  [com.taoensso/carmine "2.19.1"]
                  [ring/ring-mock "0.4.0"]
                  [org.clojure/tools.namespace "1.0.0"]
-                 [cheshire "5.10.0"]]
+                 [cheshire "5.10.0"]
+                 [com.novemberain/validateur "2.5.0"]]
 
+  :main ^:skip-aot posts-system.core
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+  :repl-options {:init-ns user
+                 :timeout 120000}
+  :profiles {:uberjar {:aot :all}
+             :dev     {:source-paths ["profiles/dev"]}})
